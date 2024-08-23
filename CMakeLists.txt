@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.4)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 message("Current Cmake version is : " ${CMAKE_VERSION})
 
