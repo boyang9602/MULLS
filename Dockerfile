@@ -37,7 +37,7 @@ RUN rm -rf *.deb ceres-solver-2.1.0* Sophus libLAS TEASER-plusplus cmake-3.24.4-
 
 RUN ldconfig
 
-WORKDIR MULLS
+WORKDIR /MULLS
 COPY . .
 
 RUN rm -rf build log bin demo_data

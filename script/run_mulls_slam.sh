@@ -2,53 +2,37 @@
 #########################################################################################
 #                                  MULLS SLAM                                           #
 ############################# part to configure (down)###################################
-sequence_id=00
+sequence_id=$1
 
 #experiment unique name
-exp_id=xxx_id
-
-#data path (base folder)
-diskbase=/media/yuepan/BackupPlus/Data/
+exp_id=$2
 
 #data path (project folder)
 #Example demo
-project_folder=./demo_data
-#KITTI
-#project_folder=${diskbase}/kitti-dataset/sequences/${sequence_id}
-#HESAI
-#project_folder=${diskbase}/hesai-dataset/sequences/xxx
-#Baidu
-#project_folder=${diskbase}/apollo-dataset/sequences/xxx
-#UrbanLoc
-#project_folder=${diskbase}/urbanloc-dataset/sequences/xxx
-#Ford Campus
-#project_folder=${diskbase}/ford-dataset/IJRR-Dataset-1
-#MIMAP
-#project_folder=${diskbase}/mimap-dataset/mimap_in_slam_00
+project_folder=./data/
+output_folder=./output/
 
 #point cloud format (selecting from pcd, ply, las, txt, h5, csv, bin)
-pc_format=pcd
+# pc_format=pcd
 #pc_format=ply
 #pc_format=h5
 #pc_format=txt
 #pc_format=las
 #pc_format=csv
-#pc_format=bin
+pc_format=bin
 
 #input point cloud folder path
-#pc_folder=${project_folder}/label_pcd  #used only in semanctic kitti
-pc_folder=${project_folder}/${pc_format}
+pc_folder=${project_folder}/$exp_id/dataset/sequences/$sequence_id/velodyne
 
 #input ground truth pose file path (optional)
-gt_body_pose_file=${project_folder}/${sequence_id}.txt #kitti ground truth file
-#gt_body_pose_file=${project_folder}/pose_gt_lidar.txt
+gt_body_pose_file=${project_folder}/$exp_id/dataset/poses/"$sequence_id".txt
 
 #input calibration file path (optional) 
-calib_file=${project_folder}/calib.txt
+calib_file=${project_folder}/$exp_id/dataset/sequences/$sequence_id/calib.txt
 
 #input config file path
-config_file=./script/config/lo_gflag_list_example_demo.txt
-#config_file=./script/config/lo_gflag_list_kitti_urban.txt
+# config_file=./script/config/lo_gflag_list_example_demo.txt
+config_file=./script/config/lo_gflag_list_kitti_urban.txt
 #config_file=./script/config/lo_gflag_list_kitti_highway.txt
 #config_file=./script/config/lo_gflag_list_kitti_ultrafast.txt
 
@@ -62,20 +46,18 @@ frame_step=1
 ############################### no need to edit (down) ###################################
 
 #output path
-lo_adjacent_tran_file=${project_folder}/result/Rt_lo_${exp_id}.txt
-lo_lidar_pose_file=${project_folder}/result/pose_l_lo_${exp_id}.txt
-lo_body_pose_file=${project_folder}/result/pose_b_lo_${exp_id}.txt
-gt_lidar_pose_file=${project_folder}/result/pose_l_gt.txt
-lo_lidar_pose_point_cloud=${project_folder}/result/traj_l_lo_${exp_id}.pcd
-gt_lidar_pose_point_cloud=${project_folder}/result/traj_l_gt.pcd
-map_pc_folder=${project_folder}/result/map_point_clouds
-timing_report_file=${project_folder}/result/timing_table_${exp_id}.txt
+lo_adjacent_tran_file=${output_folder}/$exp_id/Rt_lo_${exp_id}.txt
+lo_lidar_pose_file=${output_folder}/$exp_id/pose_l_lo_${exp_id}.txt
+lo_body_pose_file=${output_folder}/$exp_id/pose_b_lo_${exp_id}.txt
+gt_lidar_pose_file=${output_folder}/$exp_id/pose_l_gt.txt
+lo_lidar_pose_point_cloud=${output_folder}/$exp_id/traj_l_lo_${exp_id}.pcd
+gt_lidar_pose_point_cloud=${output_folder}/$exp_id/traj_l_gt.pcd
+map_pc_folder=${output_folder}/$exp_id/map_point_clouds
+timing_report_file=${output_folder}/$exp_id/timing_table_${exp_id}.txt
 
-mkdir ./log
-mkdir ./log/test
-mkdir ${project_folder}/result
+mkdir ${output_folder}/$exp_id
+mkdir ${output_folder}/$exp_id/log/
 mkdir ${map_pc_folder}
-mkdir ${map_pc_folder}_gt
 
 rm ${pc_folder}_filelist.txt
 ls ${pc_folder} >> ${pc_folder}_filelist.txt
@@ -86,7 +68,7 @@ ls ${pc_folder} >> ${pc_folder}_filelist.txt
 ./bin/mulls_slam \
 --colorlogtostderr=true \
 -stderrthreshold 0 \
--log_dir ./log/test \
+-log_dir ${output_folder}/$exp_id/log/ \
 --v=1 \
 --point_cloud_folder=${pc_folder} \
 --pc_format=.${pc_format} \
@@ -104,7 +86,7 @@ ls ${pc_folder} >> ${pc_folder}_filelist.txt
 --frame_num_end=${frame_end} \
 --frame_step=${frame_step} \
 --flagfile=${config_file} \
---real_time_viewer_on=1 \
+--real_time_viewer_on=0 \
 --gt_in_lidar_frame=0 \
 --gt_oxts_format=0 \
 --write_out_map_on=0 \
@@ -114,7 +96,7 @@ ls ${pc_folder} >> ${pc_folder}_filelist.txt
 #please set the parameters in the config file 
 
 #simple evaluation using evo (https://github.com/MichaelGrupp/evo)
-evaluation_file=${project_folder}/result/Rt_lo_${exp_id}_evaluation.txt
+evaluation_file=${output_folder}/$exp_id/Rt_lo_${exp_id}_evaluation.txt
 #evo_imgs=${project_folder}/result/${exp_id}_evaluation_evo.zip
 
 # evo_traj kitti ${lo_body_pose_file} --ref=${gt_body_pose_file} -p --plot_mode=xz
