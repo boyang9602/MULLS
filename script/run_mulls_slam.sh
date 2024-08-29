@@ -46,18 +46,17 @@ frame_step=1
 ############################### no need to edit (down) ###################################
 
 #output path
-lo_adjacent_tran_file=${output_folder}/$exp_id/Rt_lo_${exp_id}.txt
-lo_lidar_pose_file=${output_folder}/$exp_id/pose_l_lo_${exp_id}.txt
-lo_body_pose_file=${output_folder}/$exp_id/pose_b_lo_${exp_id}.txt
-gt_lidar_pose_file=${output_folder}/$exp_id/pose_l_gt.txt
-lo_lidar_pose_point_cloud=${output_folder}/$exp_id/traj_l_lo_${exp_id}.pcd
-gt_lidar_pose_point_cloud=${output_folder}/$exp_id/traj_l_gt.pcd
-map_pc_folder=${output_folder}/$exp_id/map_point_clouds
-timing_report_file=${output_folder}/$exp_id/timing_table_${exp_id}.txt
+lo_adjacent_tran_file=${output_folder}/$exp_id/$sequence_id/Rt_lo_${exp_id}.txt
+lo_lidar_pose_file=${output_folder}/$exp_id/$sequence_id/pose_l_lo_${exp_id}.txt
+lo_body_pose_file=${output_folder}/$exp_id/$sequence_id/pose_b_lo_${exp_id}.txt
+gt_lidar_pose_file=${output_folder}/$exp_id/$sequence_id/pose_l_gt.txt
+lo_lidar_pose_point_cloud=${output_folder}/$exp_id/$sequence_id/traj_l_lo_${exp_id}.pcd
+gt_lidar_pose_point_cloud=${output_folder}/$exp_id/$sequence_id/traj_l_gt.pcd
+map_pc_folder=${output_folder}/$exp_id/$sequence_id/map_point_clouds
+timing_report_file=${output_folder}/$exp_id/$sequence_id/timing_table_${exp_id}.txt
 
-mkdir ${output_folder}/$exp_id
-mkdir ${output_folder}/$exp_id/log/
-mkdir ${map_pc_folder}
+mkdir -p ${output_folder}/$exp_id/$sequence_id/log/
+mkdir -p ${map_pc_folder}
 
 rm ${pc_folder}_filelist.txt
 ls ${pc_folder} >> ${pc_folder}_filelist.txt
@@ -68,7 +67,7 @@ ls ${pc_folder} >> ${pc_folder}_filelist.txt
 ./bin/mulls_slam \
 --colorlogtostderr=true \
 -stderrthreshold 0 \
--log_dir ${output_folder}/$exp_id/log/ \
+-log_dir ${output_folder}/$exp_id/$sequence_id/log/ \
 --v=1 \
 --point_cloud_folder=${pc_folder} \
 --pc_format=.${pc_format} \
@@ -96,7 +95,7 @@ ls ${pc_folder} >> ${pc_folder}_filelist.txt
 #please set the parameters in the config file 
 
 #simple evaluation using evo (https://github.com/MichaelGrupp/evo)
-evaluation_file=${output_folder}/$exp_id/Rt_lo_${exp_id}_evaluation.txt
+evaluation_file=${output_folder}/$exp_id/$sequence_id/Rt_lo_${exp_id}_evaluation.txt
 #evo_imgs=${project_folder}/result/${exp_id}_evaluation_evo.zip
 
 # evo_traj kitti ${lo_body_pose_file} --ref=${gt_body_pose_file} -p --plot_mode=xz
